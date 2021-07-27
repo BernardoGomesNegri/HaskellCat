@@ -49,6 +49,6 @@ parse fs
     | otherwise =
         concat `fmap` mapM readFile fs
 
-usage   = putStrLn "Usage: cat [-vh] [file ..]"
+usage   = putStrLn "Usage: cat [-vbns] [files ..]"
 version = putStrLn "Haskell cat 0.1"
 exit    = exitSuccess
