@@ -28,15 +28,18 @@ sfilterString strings =
         head strings : sfilterString (tail strings)
 
 vfilterString :: [String] -> [String]
-vfilterString strings = filter (not . isPrint) (head strings) : vfilterString (tail strings)
+vfilterString [] = []
+vfilterString strings =
+    let predicate x = if not $ isPrint x then '^' else x in
+    fmap predicate (head strings) : vfilterString (tail strings)
 
 readFileArg :: [String] -> ([String] -> [String]) -> IO String
-readFileArg fs fn = fmap (unlines . fn . lines . concat) (mapM readFile (fs))
+readFileArg fs fn = fmap (unlines . fn . lines . concat) (mapM readFile fs)
 
 parse :: [String] -> IO String
 parse ["--help"] = usage   >> exit
 parse ["--version"] = version >> exit
-parse []     = getContents
+parse [] = getContents
 parse fs
     | head fs == "-b" =
         readFileArg (tail fs) (bfilterString 1)
